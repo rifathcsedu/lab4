@@ -5,6 +5,7 @@ Created on Oct 12, 2016
 '''
 import queue
 import threading
+from email.policy import default
 
 
 ## wrapper class for a queue of packets
@@ -211,12 +212,28 @@ class Router:
             pass
         
     ## Print routing table
-    def print_routes(self):
-        print('%s: routing table' % self)
+    def print_routes(self,type):
+        if(type==0):
+            print('%s: routing table' % self)
         #TODO: print the routes as a two dimensional table for easy inspection
         # Currently the function just prints the route table as a dictionary
-        print(self.rt_tbl_D)
-        
+        #print(self.rt_tbl_D)
+        i=1
+        while i<=2:
+            if(self.rt_tbl_D.get(i,"none")!="none"):
+                #print(self.rt_tbl_D[i])
+                j=0
+                s=str(i)+" "
+                while j<2:
+                    if(self.rt_tbl_D[i].get(j,"none")=="none"):
+                        s+="~ "
+                    else:
+                        s+=str(self.rt_tbl_D[i].get(j))+" "
+                    j+=1
+                print(s)
+            i+=1
+                
+        #print(self.rt_tbl_D[2])
                 
     ## thread target for the host to keep forwarding data
     def run(self):

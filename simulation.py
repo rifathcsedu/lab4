@@ -21,7 +21,7 @@ if __name__ == '__main__':
     object_L.append(client)
     server = network.Host(2)
     object_L.append(server)
-    
+    table=[]
     #create routers and routing tables for connected clients (subnets)
     router_a_rt_tbl_D = {1: {0: 1}} # packet to host 1 through interface 0 for cost 1
     router_a = network.Router(name='A', 
@@ -35,7 +35,9 @@ if __name__ == '__main__':
                               rt_tbl_D = router_b_rt_tbl_D, 
                               max_queue_size=router_queue_size)
     object_L.append(router_b)
-    
+    table.append(router_a_rt_tbl_D)
+    table.append(router_b_rt_tbl_D)
+    #print table
     #create a Link Layer to keep track of links between network nodes
     link_layer = link.LinkLayer()
     object_L.append(link_layer)
@@ -59,16 +61,25 @@ if __name__ == '__main__':
     
     #create some send events    
     for i in range(1):
-        client.udt_send(2, 'Sample client data %d' % i)
+        server.udt_send(1, 'Sample client data %d' % i)
         
     #give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
     
+    #router_a.print_routes()
+    #router_b.print_routes()
     #print the final routing tables
+    flag=0
+    print("\n\n\n")
     for obj in object_L:
-        if str(type(obj)) == "<class 'network.Router'>":
-            obj.print_routes()
-    
+        if str(type(obj)) == "<class 'network.Router'>" and flag==0:
+            print("  Cost to")
+            print("  A B")
+            obj.print_routes(1)
+            flag=1
+        elif str(type(obj)) == "<class 'network.Router'>":
+            obj.print_routes(1)
+    print("\n\n\n")
     #join all threads
     for o in object_L:
         o.stop = True
